@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Messages Received</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    body { font-family: Arial; background: #eef2f3; margin: 0; }
+    nav { background: #333; padding: 10px; }
+    nav a { color: white; margin-right: 15px; text-decoration: none; }
+    nav a:hover { text-decoration: underline; }
+    .container { max-width: 800px; margin: 30px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { padding: 8px; border: 1px solid #ddd; text-align: left; }
+    th { background: #f2f2f2; }
+    td i { color: #3498db; margin-right: 5px; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="home.html">Home</a>
+  <a href="contact.html">Contact</a>
+  <a href="contactList.html">Messages</a>
+</nav>
+<hr>
+
+<div class="container">
+  <h1>Messages Received</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th><i class="fas fa-user"></i> Name</th>
+        <th><i class="fas fa-envelope"></i> Email</th>
+        <th><i class="fas fa-comment"></i> Message</th>
+        <th>Received At</th>
+      </tr>
+    </thead>
+    <tbody id="contactTable"></tbody>
+  </table>
+</div>
+
+<script>
+const contactTable = document.getElementById("contactTable");
+const API_BASE = "http://localhost:5000/api";
+
+// Fetch messages
+async function fetchContacts() {
+  try {
+    const res = await fetch(`${API_BASE}/contact`);
+    const data = await res.json();
+    contactTable.innerHTML = "";
+    data.forEach(c => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${c.id}</td>
+        <td><i class="fas fa-user"></i> ${c.name}</td>
+        <td><i class="fas fa-envelope"></i> ${c.email}</td>
+        <td><i class="fas fa-comment"></i> ${c.message}</td>
+        <td>${new Date(c.created_at).toLocaleString()}</td>
+      `;
+      contactTable.appendChild(row);
+    });
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+fetchContacts();
+</script>
+
+</body>
+</html>

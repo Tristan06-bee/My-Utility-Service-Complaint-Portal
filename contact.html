@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Contact Us</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    body { font-family: Arial; background: #eef2f3; margin: 0; }
+    nav { background: #333; padding: 10px; }
+    nav a { color: white; margin-right: 15px; text-decoration: none; }
+    nav a:hover { text-decoration: underline; }
+    .container { max-width: 600px; margin: 50px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    label { display: flex; align-items: center; margin-top: 15px; font-weight: bold; color: #555; }
+    label i { margin-right: 8px; color: #3498db; }
+    input, textarea { width: 100%; padding: 12px; margin-top: 6px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; box-sizing: border-box; }
+    button { margin-top: 20px; padding: 12px; width: 100%; background: #4CAF50; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; }
+    button:hover { background: #45a049; }
+    #status { margin-top: 15px; text-align: center; font-weight: bold; color: #333; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="home.html">Home</a>
+  <a href="contactList.html">Messages</a>
+</nav>
+<hr>
+
+<div class="container">
+  <h1>Contact Us</h1>
+  <form id="contactForm">
+    <label><i class="fas fa-user"></i> Name</label>
+    <input type="text" name="name" required>
+
+    <label><i class="fas fa-envelope"></i> Email</label>
+    <input type="email" name="email" required>
+
+    <label><i class="fas fa-comment"></i> Message</label>
+    <textarea name="message" required></textarea>
+
+    <button type="submit">Submit</button>
+  </form>
+  <div id="status"></div>
+</div>
+
+<script>
+const form = document.getElementById("contactForm");
+const statusDiv = document.getElementById("status");
+const API_BASE = "http://localhost:5000/api";
+
+form.addEventListener("submit", async e => {
+  e.preventDefault();
+  const fd = new FormData(form);
+  const data = Object.fromEntries(fd.entries());
+
+  try {
+    const res = await fetch(`${API_BASE}/contact`, {
+      method: "POST",
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+
+    if (res.ok) {
+      statusDiv.textContent = "Message sent successfully!";
+      statusDiv.style.color = "green";
+      form.reset();
+    } else {
+      statusDiv.textContent = "Failed to send message.";
+      statusDiv.style.color = "red";
+    }
+  } catch (err) {
+    console.error(err);
+    statusDiv.textContent = "Failed to send message.";
+    statusDiv.style.color = "red";
+  }
+});
+</script>
+
+</body>
+</html>
